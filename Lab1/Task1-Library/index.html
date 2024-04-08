@@ -56,7 +56,7 @@
             <button class="btn btn-primary m-auto" @click="hideWishlist()">Back</button>
             <div v-if="count == 0">No books in yours wishlist</div>
             <div v-else>
-                <div v-for="book in wishlist">
+                <div v-for="(book, index) in wishlist">
                     <table class="table">
                         <thead class="m-3">
                             <tr>
@@ -73,8 +73,15 @@
                                     <span>{{book.quantity}}</span>
                                     <button class="btn btn-danger ml-2" @click="removeFromWishlist(book)">-</button>
                                 </th>
+                                <th>Total: {{ formatCurrency(book.price * book.quantity) }}</th>
                             </tr>
                         </thead>
+                        <tfoot v-if="index === wishlist.length - 1">
+                            <tr>
+                                <td colspan="6" class="text-end">Total Price for All Items:</td>
+                                <td>{{ formatCurrency(totalPrice) }}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -92,7 +99,8 @@
                 count: 0,
                 books: books,
                 wishListVisible: false,
-                wishlist: []
+                wishlist: [],
+                totalPrice: 0
             }),
             methods: {
                 addToWishlist(book) {
@@ -103,6 +111,7 @@
                     } else {
                         book.quantity++;
                     }
+                    this.calculateTotalPrice();
                 },
                 removeFromWishlist(book) {
                     if (book.quantity === 1) {
@@ -111,6 +120,7 @@
                     } else {
                         book.quantity--;
                     }
+                    this.calculateTotalPrice();
                 },
                 viewWishlist() {
                     this.wishListVisible = true
@@ -126,6 +136,9 @@
                 },
                 isInWishlist(book) {
                     return this.wishlist.some(b => book.title === b.title);
+                },
+                calculateTotalPrice() {
+                    this.totalPrice = this.wishlist.reduce((total, book) => total + (book.price * (book.quantity || 0)), 0);
                 }
             }
         }).mount('#root')
