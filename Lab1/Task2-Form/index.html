@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 2 - Form</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app" class="container mt-5">
+  <!-- Form -->
+  <h2 v-if="!submitted">Lab 2 - Form</h2>
+  <form v-if="!submitted" @submit.prevent="submitForm" novalidate>
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" v-model="formData.name" required>
+      <div class="invalid-feedback" v-if="formErrors.name">Name is required.</div>
+    </div>
+    <div class="mb-3">
+      <label for="university" class="form-label">University</label>
+      <input type="text" class="form-control" id="university" v-model="formData.university" required>
+      <div class="invalid-feedback" v-if="formErrors.university">University is required.</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Gender</label><br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="male" value="Male" v-model="formData.gender" required>
+        <label class="form-check-label" for="male">Male</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="female" value="Female" v-model="formData.gender" required>
+        <label class="form-check-label" for="female">Female</label>
+      </div>
+      <div class="invalid-feedback d-block" v-if="formErrors.gender">Gender is required.</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Department</label><br>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="it" value="IT" v-model="formData.department" required>
+        <label class="form-check-label" for="it">IT</label><br>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="finance" value="Finance" v-model="formData.department" required>
+        <label class="form-check-label" for="finance">Finance</label><br>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="marketing" value="Marketing" v-model="formData.department" required>
+        <label class="form-check-label" for="marketing">Marketing</label><br>
+      </div>
+      <div class="invalid-feedback d-block" v-if="formErrors.department">At least one department must be selected.</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Next</button>
+  </form>
+
+  <!-- Buttons (Back and Submit) -->
+  <div v-if="submitted">
+    <button class="btn btn-primary" @click="goBack">Back</button>
+    <button class="btn btn-success" @click="submitForm">Submit</button>
+  </div>
+
+  <!-- Confirmation Message -->
+  <div v-if="submitted">
+    <h2>Thank you for your submission!</h2>
+    <p>Name: {{ formData.name }}</p>
+    <p>University: {{ formData.university }}</p>
+    <p>Gender: {{ formData.gender }}</p>
+    <p>Departments: {{ formData.department.join(', ') }}</p>
+  </div>
+</div>
+
+<!-- Vue.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+const app = new Vue({
+  el: '#app',
+  data: {
+    formData: {
+      name: '',
+      university: '',
+      gender: '',
+      department: []
+    },
+    submitted: false
+  },
+  computed: {
+    formErrors() {
+      const errors = {};
+      if (!this.formData.name.trim()) errors.name = true;
+      if (!this.formData.university.trim()) errors.university = true;
+      if (!this.formData.gender) errors.gender = true;
+      if (this.formData.department.length === 0) errors.department = true;
+      return errors;
+    }
+  },
+  methods: {
+    submitForm() {
+      if (Object.keys(this.formErrors).length === 0) {
+        this.submitted = true; // Show confirmation message
+      }
+    },
+    goBack() {
+      this.submitted = false; // Hide confirmation message
+    }
+  }
+});
+</script>
+
+</body>
+</html>
