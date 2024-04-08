@@ -42,7 +42,7 @@
                         <h5>Title : {{book.title}}</h5>
                         <h5>Author : {{book.author}}</h5>
                         <h5>Country : {{book.country}}</h5>
-                        <h5>Price : {{Intl.NumberFormat('ar-SA', {style: 'currency' , currency:'RSA'}).format(book.price)}}</h5>
+                        <h5>Price : {{ formatCurrency(book.price) }}</h5>
                         <h5 :class="{'more': book.pages>200 , 'less': book.pages<300}">No. of pages : {{book.pages}}</h5>
                     </div>
 
@@ -69,7 +69,7 @@
                                 <th>{{book.author}}</th>
                                 <th>{{book.pages}}</th>
                                 <th>{{book.country}}</th>
-                                <th>Price : {{Intl.NumberFormat('ar-SA', {style: 'currency' , currency:'RSA'}).format(book.price)}}</th>
+                                <th>Price : {{ formatCurrency(book.price) }}</th>
                                 <th>
                                     <button class="btn btn-danger" @click="removeFromwishList(book)">Remove</button>
                                 </th>
@@ -93,33 +93,29 @@
                 books: books,
                 wishListVisible:false,
                 wishlist: []
-            })
-        ,methods: {
-            addToWishlist(book)
-            {
-                if(!this.wishlist.some(b => book.title === b.title))
-                {
-                    this.wishlist.push(book)
-                    this.count++
+            }),
+            methods: {
+                addToWishlist(book) {
+                    if(!this.wishlist.some(b => book.title === b.title)) {
+                        this.wishlist.push(book)
+                        this.count++
+                    }
+                },
+                viewWishlist() {
+                    this.wishListVisible = true
+                },
+                hideWishlist() {
+                    this.wishListVisible = false
+                },
+                removeFromwishList(book) {
+                    this.wishlist = this.wishlist.filter(b => book.title === b.title && book.author === b.author)
+                    this.count --;
+                },
+                formatCurrency(price) {
+                    return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'RSA' }).format(price);
                 }
-                console.log(this.wishlist)
-
-            },
-            viewWishlist()
-            {
-                this.wishListVisible = true
-                console.log(this.wishListVisible)
-            },
-            hideWishlist()
-            {
-                this.wishListVisible = false
-            },
-            removeFromwishList(book)
-            {
-                this.wishlist = this.wishlist.filter(b => book.title === b.title && book.author === b.author)
-                this.count --;
             }
-        }}).mount('#root')
+        }).mount('#root')
     </script>
 </body>
 </html>
